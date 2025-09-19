@@ -1,36 +1,3 @@
-
-## lab01
-
-### ex01
-
-```python
-name = input('Имя: ')
-age = int(input('Возраст: '))
-print(f'Привет, {name}! Через год тебе будет {age+1}.')
-```
-
-![alt text](image.png)
-
-### ex02
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### ex03
-
-```python
 print("enter the price")
 price = float(input())
 print("enter the discount %")
@@ -43,6 +10,3 @@ total = base + vat_amount
 print("the price after discount",f"{base:.2f}")
 print("the vat ", f"{vat_amount:.2f}")
 print("total", f"{total:.2f}")
-```
-
-![alt text](image-1.png)

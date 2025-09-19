@@ -11,18 +11,21 @@ print(f'Привет, {name}! Через год тебе будет {age+1}.')
 
 ![alt text](image.png)
 
+
+
+
+
 ### ex02
 
+```python
+numbers = [float(input()),float(input())]
+total = sum(numbers)
+average = sum(numbers) / len(numbers)
+print(total)
+print(average)
+```
 
-
-
-
-
-
-
-
-
-
+![alt text](image-2.png)
 
 
 

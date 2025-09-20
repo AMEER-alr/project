@@ -67,3 +67,22 @@ else :
 ```
 
 ![alt text](image-4.png)
+
+
+
+
+
+## ex05
+
+```python
+ФИО = input()
+length1 = len(ФИО)
+def get_first_letters(name) :
+    words = name.split()
+    first_letters = [word[0] for word in words if word]
+    return ''.join(first_letters)
+print("Инициалы:",get_first_letters(ФИО))
+print("Длина (символов):", length1)
+```
+
+![alt text](image-5.png)

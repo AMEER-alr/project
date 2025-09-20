@@ -9,7 +9,7 @@ age = int(input('Возраст: '))
 print(f'Привет, {name}! Через год тебе будет {age+1}.')
 ```
 
-![alt text](image.png)
+![alt text](image-1.png)
 
 
 
@@ -48,7 +48,7 @@ print("the vat ", f"{vat_amount:.2f}")
 print("total", f"{total:.2f}")
 ```
 
-![alt text](image-1.png)
+![alt text](image-3.png)
 
 
 
@@ -66,4 +66,4 @@ else :
     print("none")
 ```
 
-![alt text](image-3.png)
+![alt text](image-4.png)

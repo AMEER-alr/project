@@ -34,11 +34,11 @@ print(average)
 ### ex03
 
 ```python
-print("enter the price")
+print("enter the price :")
 price = float(input())
-print("enter the discount %")
+print("enter the discount % :")
 discount = float(input())
-print("enter the vat % ")
+print("enter the vat % :")
 vat = float(input())
 base = price * (1-discount/100)
 vat_amount  = base * (vat/100)
@@ -48,7 +48,7 @@ print("the vat ", f"{vat_amount:.2f}")
 print("total", f"{total:.2f}")
 ```
 
-![alt text](image-3.png)
+![alt text](image.png)
 
 
 

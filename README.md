@@ -48,7 +48,7 @@ print("the vat ", f"{vat_amount:.2f}")
 print("total", f"{total:.2f}")
 ```
 
-![alt text](image.png)
+![alt text](image-3.png)
 
 
 

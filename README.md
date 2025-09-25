@@ -9,7 +9,7 @@ age = int(input('Возраст: '))
 print(f'Привет, {name}! Через год тебе будет {age+1}.')
 ```
 
-![alt text](image-1.png)
+![alt text](./images/lab01/image-1.png)
 
 
 
@@ -25,7 +25,7 @@ print(total)
 print(average)
 ```
 
-![alt text](image-2.png)
+![alt text](./images/lab01/image-2.png)
 
 
 
@@ -48,7 +48,7 @@ print("the vat ", f"{vat_amount:.2f}")
 print("total", f"{total:.2f}")
 ```
 
-![alt text](image-3.png)
+![alt text](./images/lab01/image-3.png)
 
 
 
@@ -66,7 +66,7 @@ else :
     print("none")
 ```
 
-![alt text](image-4.png)
+![alt text](./images/lab01/image-4.png)
 
 
 
@@ -76,7 +76,7 @@ else :
 
 ```python
 ФИО = input()
-length1 = len(ФИО)
+length1 = len(ФИО.replace(" ", ""))
 def get_first_letters(name) :
     words = name.split()
     first_letters = [word[0] for word in words if word]
@@ -85,7 +85,7 @@ print("Инициалы:",get_first_letters(ФИО))
 print("Длина (символов):", length1)
 ```
 
-![alt text](image-5.png)
+![alt text](./images/lab01/image.png)
 
 
 
@@ -112,4 +112,4 @@ for _ in range(n):
 print(on_campus, online)
 ```
 
- ![alt text](image.png)
+ ![alt text](./images/lab01/image-6.png)

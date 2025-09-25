@@ -85,7 +85,7 @@ print("Инициалы:",get_first_letters(ФИО))
 print("Длина (символов):", length1)
 ```
 
-![alt text](./images/lab01/image.png)
+![alt text](./images/lab01/image-5.png)
 
 
 

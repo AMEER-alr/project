@@ -112,4 +112,4 @@ for _ in range(n):
 print(on_campus, online)
 ```
 
-![alt text](ex06.png)
+ ![alt text](image.png)

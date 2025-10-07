@@ -386,3 +386,4 @@ except ValueError as e:
 ```
 ![alt text](images/lab02/image-03-(2).png)
 
+

@@ -387,3 +387,91 @@ except ValueError as e:
 ![alt text](images/lab02/image-03-(2).png)
 
 
+
+
+## lib
+
+## ex01
+```python
+import re
+from collections import Counter
+
+def normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str:
+    if not text:
+        return ""
+    
+    if yo2e:
+        text = text.replace('Ё', 'Е').replace('ё', 'е')
+    
+    if casefold:
+        text = text.casefold()
+    
+    text = re.sub(r'[\x00-\x1f\x7f-\x9f]', ' ', text)
+    text = re.sub(r'\s+', ' ', text)
+    
+    return text.strip()
+
+def tokenize(text: str) -> list[str]:
+    if not text:
+        return []
+    
+    pattern = r'[\w\-]+'
+    tokens = re.findall(pattern, text)
+    return [token for token in tokens if token]
+
+def count_freq(tokens: list[str]) -> dict[str, int]:
+    return dict(Counter(tokens))
+
+def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
+    if not freq:
+        return []
+    
+    items = list(freq.items())
+    sorted_items = sorted(items, key=lambda x: (-x[1], x[0]))
+    return sorted_items[:n]
+
+
+
+```
+
+
+
+
+## lab03
+
+## ex01
+```python
+import sys
+import os
+
+current_dir = os.path.dirname(__file__)
+parent_dir = os.path.dirname(current_dir)
+lib_path = os.path.join(parent_dir, 'lib')
+sys.path.insert(0, lib_path)
+
+from text import normalize, tokenize, count_freq, top_n
+
+print("1. normalize('Привет\\nМир\\t') =", repr(normalize("Привет\nМир\t")))
+print("2. normalize('Ёжик, Ёлка', yo2e=True) =", repr(normalize("Ёжик, Ёлка", yo2e=True)))
+print("3. normalize('hello\\n\\nworld') =", repr(normalize("hello\n\nworld")))
+print("4. normalize('  двойные пробелы  ') =", repr(normalize("  двойные пробелы  ")))
+
+print("5. tokenize('привет мир') =", tokenize("привет мир"))
+print("6. tokenize('hello, world!!!') =", tokenize("hello, world!!!"))
+print("7. tokenize('по-настоящему круто') =", tokenize("по-настоящему круто"))
+print("8. tokenize('2025 год') =", tokenize("2025 год"))
+print("9. tokenize('emoji ⚫ не слово') =", tokenize("emoji ⚫ не слово"))
+
+tokens1 = ["a", "b", "a", "c", "b", "a"]
+freq1 = count_freq(tokens1)
+print("10. Токены", tokens1, "-> частоты", freq1)
+print("11. top_n(..., n=2) ->", top_n(freq1, n=2))
+
+tokens2 = ["bb", "aa", "bb", "aa", "cc"]
+freq2 = count_freq(tokens2)
+print("12. Токены", tokens2, "-> частоты", freq2)
+print("13. top_n(..., n=2) ->", top_n(freq2, n=2))
+
+
+```
+![alt text](images/lab03/image-01-(3).png)

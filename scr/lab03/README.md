@@ -1,96 +1,164 @@
+## lib
+
+## ex01
+```python
+import re
+from collections import defaultdict
+from typing import Dict, List, Tuple
+
+def normalize(text: str, *, casefold: bool = True, yo_to_e: bool = True) -> str:
+    """
+    Normalize text by applying case folding, character replacements,
+    and whitespace normalization
+    """
+    if not text:
+        return ""
+    
+    processed = text
+
+    if casefold:
+        processed = processed.casefold()
+
+    if yo_to_e:
+        processed = processed.replace('ё', 'е').replace('Ё', 'Е')
+
+    control_pattern = r'[\t\r\n\v\f]'
+    processed = re.sub(control_pattern, ' ', processed)
+
+    processed = re.sub(r' +', ' ', processed).strip()
+    
+    return processed
+
+def tokenize(text: str) -> List[str]:
+    """
+    Split text into tokens using word boundaries and hyphens
+    """
+    if not text:
+        return []
+
+    token_pattern = r'[a-zа-яё0-9_]+(?:-[a-zа-яё0-9_]+)*'
+    
+    matches = re.findall(token_pattern, text, flags=re.IGNORECASE)
+    return matches
+
+def count_freq(tokens: List[str]) -> Dict[str, int]:
+    """
+    Count frequency of each token in the list
+    """
+    frequency_counter = defaultdict(int)
+    
+    for item in tokens:
+        frequency_counter[item] += 1
+            
+    return dict(frequency_counter)
+
+def top_n(frequency_data: Dict[str, int], limit: int = 5) -> List[Tuple[str, int]]:
+    """
+    Get top N items by frequency, with alphabetical tie-breaker
+    """
+    items_list = [(word, count) for word, count in frequency_data.items()]
+
+    items_list.sort(key=lambda item: (-item[1], item[0]))
+    
+    return items_list[:limit]
+
+if __name__ == "__main__":
+    print(repr(normalize("ПрИвЕт\nМир\t")))
+    print(repr(normalize("ёжик, Ёлка")))
+    print(repr(normalize("Hello\r\nWorld")))
+    print(repr(normalize("  двойные   пробелы  ")))
+    print()
+
+    print(tokenize("привет мир"))
+    print(tokenize("hello,world!!!"))
+    print(tokenize("по-настоящему круто"))
+    print(tokenize("2025 год"))
+    print(tokenize("emoji 😀 не слово"))
+    print()
+    
+    frequency_data1 = count_freq(["a", "b", "a", "c", "b", "a"])
+    print("Frequency 1:", frequency_data1)
+    print("Top 2:", top_n(frequency_data1, 2))
+    
+    frequency_data2 = count_freq(["bb", "aa", "bb", "aa", "cc"])
+    print("Frequency 2:", frequency_data2)
+    print("Top 2:", top_n(frequency_data2, 2))
+
+
+```
+![alt text](/images/lab03/image-01-(3).png)
+
+
 
 ## lab03
 
-## ex01
-
+## ex02
 ```python
 import sys
 import os
 
-current_dir = os.path.dirname(__file__)
-parent_dir = os.path.dirname(current_dir)
-lib_path = os.path.join(parent_dir, 'lib')
-sys.path.insert(0, lib_path)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'lib'))
 
 from text import normalize, tokenize, count_freq, top_n
 
-print("1. normalize('Привет\\nМир\\t') =", repr(normalize("Привет\nМир\t")))
-print("2. normalize('Ёжик, Ёлка', yo2e=True) =", repr(normalize("Ёжик, Ёлка", yo2e=True)))
-print("3. normalize('hello\\n\\nworld') =", repr(normalize("hello\n\nworld")))
-print("4. normalize('  двойные пробелы  ') =", repr(normalize("  двойные пробелы  ")))
+def analyze_text(input_str: str, use_table: bool = False) -> str:
+    if not input_str or input_str.isspace():
+        return "No input text provided."
 
-print("5. tokenize('привет мир') =", tokenize("привет мир"))
-print("6. tokenize('hello, world!!!') =", tokenize("hello, world!!!"))
-print("7. tokenize('по-настоящему круто') =", tokenize("по-настоящему круто"))
-print("8. tokenize('2025 год') =", tokenize("2025 год"))
-print("9. tokenize('emoji ⚫ не слово') =", tokenize("emoji ⚫ не слово"))
+    clean_text = normalize(input_str)
+    words = tokenize(clean_text)
+    counts = count_freq(words)
+    top_items = top_n(counts, 5)
 
-tokens1 = ["a", "b", "a", "c", "b", "a"]
-freq1 = count_freq(tokens1)
-print("10. Токены", tokens1, "-> частоты", freq1)
-print("11. top_n(..., n=2) ->", top_n(freq1, n=2))
+    lines = []
+    lines.append(f"Всего слов: {len(words)}")
+    lines.append(f"Уникальных слов: {len(counts)}")
+    lines.append("Топ-5:")
+    
+    if use_table:
+        if top_items:
+            col_width = max(len(item[0]) for item in top_items)
+            col_width = max(col_width, 5)
+            
+            lines.append(f"| {'слово'.ljust(col_width)} | частота |")
+            lines.append(f"|{'-' * (col_width + 2)}|---------|")
 
-tokens2 = ["bb", "aa", "bb", "aa", "cc"]
-freq2 = count_freq(tokens2)
-print("12. Токены", tokens2, "-> частоты", freq2)
-print("13. top_n(..., n=2) ->", top_n(freq2, n=2))
+            for item, count in top_items:
+                lines.append(f"| {item.ljust(col_width)} | {count:7} |")
+        else:
+            lines.append("| (нет данных) |         |")
+    else:
+        for item, count in top_items:
+            lines.append(f"{item}:{count}")
+    
+    return "\n".join(lines)
 
+def run_program():
+    table_mode = os.environ.get('TEXT_STATS_TABLE') == '1'
 
-```
-![alt text](image-01-(3).png)
+    if any(arg in sys.argv for arg in ['--table', '-t']):
+        table_mode = True
 
+    if sys.stdin.isatty():
+        print("press (Ctrl+Z then Enter):")
+        print("to show the table write: --table or -t")
+    
+    try:
+        user_input = sys.stdin.read().strip()
+    except KeyboardInterrupt:
+        print("\nВвод прерван.")
+        return
+    
+    if not user_input:
+        print("Ошибка: Не получен входной текст.")
+        sys.exit(1)
 
+    output = analyze_text(user_input, table_mode)
+    print(output)
 
-
-## ex02
-
-```python
-import sys
-import os
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'lib'))
-
-from text1 import normalize, tokenize, count_freq, top_n, print_freq_table, TABLE_MODE
-
-text1 = "Привет\nМир\t"
-text2 = "Ёжик, Ёлка"
-text3 = "hello\n\nworld"
-text4 = "  двойные пробелы  "
-
-print(f"normalize('Привет\\nМир\\t') = '{normalize(text1)}'")
-print(f"normalize('Ёжик, Ёлка', yo2e=True) = '{normalize(text2, yo2e=True)}'")
-print(f"normalize('hello\\n\\nworld') = '{normalize(text3)}'")
-print(f"normalize('  двойные пробелы  ') = '{normalize(text4)}'")
-
-print(f"tokenize('привет мир') = {tokenize('привет мир')}")
-print(f"tokenize('hello, world!!!') = {tokenize('hello, world!!!')}")
-print(f"tokenize('по-настоящему круто') = {tokenize('по-настоящему круто')}")
-print(f"tokenize('2025 год') = {tokenize('2025 год')}")
-print(f"tokenize('emoji ⚫ не слово') = {tokenize('emoji ⚫ не слово')}")
-
-tokens1 = ["a", "b", "a", "c", "b", "a"]
-freq1 = count_freq(tokens1)
-print(f"Токены {tokens1} -> частоты {freq1}")
-print(f"top_n(..., n=2) -> {top_n(freq1, n=2)}")
-
-tokens2 = ["bb", "aa", "bb", "aa", "cc"]
-freq2 = count_freq(tokens2)
-print(f"Токены {tokens2} -> частоты {freq2}")
-print(f"top_n(..., n=2) -> {top_n(freq2, n=2)}")
-
-test_text = "Привет привет мир мир мир тест тест тест"
-norm_text = normalize(test_text)
-tokens_test = tokenize(norm_text)
-freq_test = count_freq(tokens_test)
-
-print("Table mode enabled:")
-print_freq_table(freq_test, n=5, table_mode=True)
-
-print("Table mode disabled:")
-print_freq_table(freq_test, n=5, table_mode=False)
+if __name__ == "__main__":
+    run_program()
 
 
 ```
-![alt text](image-02-(3).png)
-
-
+![alt text](/images/lab03/image-02-(3).png)

@@ -1,30 +1,64 @@
 import sys
 import os
 
-current_dir = os.path.dirname(__file__)
-parent_dir = os.path.dirname(current_dir)
-lib_path = os.path.join(parent_dir, 'lib')
-sys.path.insert(0, lib_path)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'lib'))
 
 from text import normalize, tokenize, count_freq, top_n
 
-print("1. normalize('Привет\\nМир\\t') =", repr(normalize("Привет\nМир\t")))
-print("2. normalize('Ёжик, Ёлка', yo2e=True) =", repr(normalize("Ёжик, Ёлка", yo2e=True)))
-print("3. normalize('hello\\n\\nworld') =", repr(normalize("hello\n\nworld")))
-print("4. normalize('  двойные пробелы  ') =", repr(normalize("  двойные пробелы  ")))
+def analyze_text(input_str: str, use_table: bool = False) -> str:
+    if not input_str or input_str.isspace():
+        return "No input text provided."
 
-print("5. tokenize('привет мир') =", tokenize("привет мир"))
-print("6. tokenize('hello, world!!!') =", tokenize("hello, world!!!"))
-print("7. tokenize('по-настоящему круто') =", tokenize("по-настоящему круто"))
-print("8. tokenize('2025 год') =", tokenize("2025 год"))
-print("9. tokenize('emoji ⚫ не слово') =", tokenize("emoji ⚫ не слово"))
+    clean_text = normalize(input_str)
+    words = tokenize(clean_text)
+    counts = count_freq(words)
+    top_items = top_n(counts, 5)
 
-tokens1 = ["a", "b", "a", "c", "b", "a"]
-freq1 = count_freq(tokens1)
-print("10. Токены", tokens1, "-> частоты", freq1)
-print("11. top_n(..., n=2) ->", top_n(freq1, n=2))
+    lines = []
+    lines.append(f"Всего слов: {len(words)}")
+    lines.append(f"Уникальных слов: {len(counts)}")
+    lines.append("Топ-5:")
+    
+    if use_table:
+        if top_items:
+            col_width = max(len(item[0]) for item in top_items)
+            col_width = max(col_width, 5)
+            
+            lines.append(f"| {'слово'.ljust(col_width)} | частота |")
+            lines.append(f"|{'-' * (col_width + 2)}|---------|")
 
-tokens2 = ["bb", "aa", "bb", "aa", "cc"]
-freq2 = count_freq(tokens2)
-print("12. Токены", tokens2, "-> частоты", freq2)
-print("13. top_n(..., n=2) ->", top_n(freq2, n=2))
+            for item, count in top_items:
+                lines.append(f"| {item.ljust(col_width)} | {count:7} |")
+        else:
+            lines.append("| (нет данных) |         |")
+    else:
+        for item, count in top_items:
+            lines.append(f"{item}:{count}")
+    
+    return "\n".join(lines)
+
+def run_program():
+    table_mode = os.environ.get('TEXT_STATS_TABLE') == '1'
+
+    if any(arg in sys.argv for arg in ['--table', '-t']):
+        table_mode = True
+
+    if sys.stdin.isatty():
+        print("press (Ctrl+Z then Enter):")
+        print("to show the table write: --table or -t")
+    
+    try:
+        user_input = sys.stdin.read().strip()
+    except KeyboardInterrupt:
+        print("\nВвод прерван.")
+        return
+    
+    if not user_input:
+        print("Ошибка: Не получен входной текст.")
+        sys.exit(1)
+
+    output = analyze_text(user_input, table_mode)
+    print(output)
+
+if __name__ == "__main__":
+    run_program()

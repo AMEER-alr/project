@@ -7,10 +7,6 @@ from collections import defaultdict
 from typing import Dict, List, Tuple
 
 def normalize(text: str, *, casefold: bool = True, yo_to_e: bool = True) -> str:
-    """
-    Normalize text by applying case folding, character replacements,
-    and whitespace normalization
-    """
     if not text:
         return ""
     
@@ -30,9 +26,6 @@ def normalize(text: str, *, casefold: bool = True, yo_to_e: bool = True) -> str:
     return processed
 
 def tokenize(text: str) -> List[str]:
-    """
-    Split text into tokens using word boundaries and hyphens
-    """
     if not text:
         return []
 
@@ -42,9 +35,6 @@ def tokenize(text: str) -> List[str]:
     return matches
 
 def count_freq(tokens: List[str]) -> Dict[str, int]:
-    """
-    Count frequency of each token in the list
-    """
     frequency_counter = defaultdict(int)
     
     for item in tokens:
@@ -53,9 +43,6 @@ def count_freq(tokens: List[str]) -> Dict[str, int]:
     return dict(frequency_counter)
 
 def top_n(frequency_data: Dict[str, int], limit: int = 5) -> List[Tuple[str, int]]:
-    """
-    Get top N items by frequency, with alphabetical tie-breaker
-    """
     items_list = [(word, count) for word, count in frequency_data.items()]
 
     items_list.sort(key=lambda item: (-item[1], item[0]))
@@ -83,7 +70,7 @@ if __name__ == "__main__":
     frequency_data2 = count_freq(["bb", "aa", "bb", "aa", "cc"])
     print("Frequency 2:", frequency_data2)
     print("Top 2:", top_n(frequency_data2, 2))
-
+    
 
 ```
 ![alt text](/images/lab03/image-01-(3).png)

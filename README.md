@@ -501,9 +501,6 @@ except ImportError:
             writer.writerows(rows)
     
     def normalize(text: str, *, casefold: bool = True, yo_to_e: bool = True) -> str:
-        if not text:
-            return ""
-        
         processed = text
 
         if casefold:
@@ -520,9 +517,6 @@ except ImportError:
         return processed
     
     def tokenize(text: str) -> List[str]:
-        if not text:
-            return []
-
         token_pattern = r'[a-zа-яё0-9_]+(?:-[a-zа-яё0-9_]+)*'
         
         matches = re.findall(token_pattern, text, flags=re.IGNORECASE)
@@ -562,10 +556,6 @@ def print_summary(word_freq: Dict[str, int], total_words: int):
 
 
 def print_pretty_table(word_freq: Dict[str, int]):
-    if not word_freq:
-        print("Нет данных для отображения")
-        return
-    
     top_words = top_n(word_freq, len(word_freq))
 
     max_word_len = max(len(word) for word in word_freq.keys())
@@ -688,7 +678,3 @@ if __name__ == "__main__":
 ![alt text](images/lab04/image-02-(4)(4).png)
 
 ![alt text](images/lab04/image-02-(4)(5).png)
-
-![alt text](images/lab04/image-02-(4)(6).png)
-
-![alt text](images/lab04/image-02-(4)(7).png)

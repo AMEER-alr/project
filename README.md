@@ -678,3 +678,11 @@ if __name__ == "__main__":
 ![alt text](images/lab04/image-02-(4)(4).png)
 
 ![alt text](images/lab04/image-02-(4)(5).png)
+
+![alt text](images/lab04/image-02-(4)(6).png)
+
+![alt text](images/lab04/image-02-(4)(7).png)
+
+![alt text](images/lab04/image-02-(4)(8).png)
+
+![alt text](images/lab04/image-02-(4)(9).png)

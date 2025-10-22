@@ -80,11 +80,11 @@ def process_text(text: str) -> Dict[str, int]:
 
 def print_summary(word_freq: Dict[str, int], total_words: int):
     unique_words = len(word_freq)
-    top_words = top_n(word_freq, 5)
+    top_words = top_n(word_freq, len(word_freq))
     
     print(f"Всего слов: {total_words}")
     print(f"Уникальных слов: {unique_words}")
-    print("Топ-5:")
+    print("Топ:")
     for word, count in top_words:
         print(f"{word}:{count}")
 

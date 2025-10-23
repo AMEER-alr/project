@@ -471,8 +471,8 @@ from typing import List, Dict, Tuple
 from collections import Counter
 
 try:
-    from src.lab04.io_txt_csv import read_text, write_csv
-    from src.lib.text import normalize, tokenize, count_freq, top_n
+    from scr.lab04.io_txt_csv import read_text, write_csv
+    from scr.lib.text import normalize, tokenize, count_freq, top_n
 except ImportError:
     import csv
     from pathlib import Path

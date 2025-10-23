@@ -452,7 +452,6 @@ if __name__ == "__main__":
 ![alt text](images/lab04/image-01-(4)(1).png)
 
 
-
 ![alt text](images/lab04/image-01-(4)(2).png)
 
 

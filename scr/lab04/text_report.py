@@ -3,73 +3,23 @@ import argparse
 from pathlib import Path
 from typing import List, Dict, Tuple
 from collections import Counter
+import os
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 try:
     from scr.lab04.io_txt_csv import read_text, write_csv
-    from scr.lib.text import normalize, tokenize, count_freq, top_n
-except ImportError:
-    import csv
-    from pathlib import Path
-    import re
-    from collections import defaultdict
-    
-    def read_text(path, encoding="utf-8"):
-        path = Path(path)
-        with open(path, 'r', encoding=encoding) as file:
-            return file.read()
-    
-    def write_csv(rows, path, header=None):
-        path = Path(path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        
-        if rows:
-            first_length = len(rows[0])
-            for i, row in enumerate(rows):
-                if len(row) != first_length:
-                    raise ValueError(f"Строка {i} имеет длину {len(row)}, ожидается {first_length}")
-        
-        with open(path, 'w', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file, delimiter=',')
-            if header is not None:
-                writer.writerow(header)
-            writer.writerows(rows)
-    
-    def normalize(text: str, *, casefold: bool = True, yo_to_e: bool = True) -> str:
-        processed = text
+    from scr.lib.text import normalize, tokenize, count_freq
+except ImportError as e:
+    print(f"wrong while import: {e}")
+    print("make sure that the file is exist scr/lib/text.py")
+    sys.exit(1)
 
-        if casefold:
-            processed = processed.casefold()
 
-        if yo_to_e:
-            processed = processed.replace('ё', 'е').replace('Ё', 'Е')
-
-        control_pattern = r'[\t\r\n\v\f]'
-        processed = re.sub(control_pattern, ' ', processed)
-
-        processed = re.sub(r' +', ' ', processed).strip()
-        
-        return processed
-    
-    def tokenize(text: str) -> List[str]:
-        token_pattern = r'[a-zа-яё0-9_]+(?:-[a-zа-яё0-9_]+)*'
-        
-        matches = re.findall(token_pattern, text, flags=re.IGNORECASE)
-        return matches
-    
-    def count_freq(tokens: List[str]) -> Dict[str, int]:
-        frequency_counter = defaultdict(int)
-        
-        for item in tokens:
-            frequency_counter[item] += 1
-                
-        return dict(frequency_counter)
-    
-    def top_n(frequency_data: Dict[str, int], limit: int = 5) -> List[Tuple[str, int]]:
-        items_list = [(word, count) for word, count in frequency_data.items()]
-
-        items_list.sort(key=lambda item: (-item[1], item[0]))
-        
-        return items_list[:limit]
+def top_n(frequency_data: Dict[str, int], limit: int = 5) -> List[Tuple[str, int]]:
+    items_list = [(word, count) for word, count in frequency_data.items()]
+    items_list.sort(key=lambda item: (-item[1], item[0]))
+    return items_list[:limit]
 
 
 def process_text(text: str) -> Dict[str, int]:
@@ -111,12 +61,10 @@ def print_pretty_table(word_freq: Dict[str, int]):
 def main_single(input_file: str, output_file: str, encoding: str = "utf-8"):
     try:
         text = read_text(input_file, encoding)
-
         word_freq = process_text(text)
         total_words = sum(word_freq.values())
         
         sorted_words = top_n(word_freq, len(word_freq))
-        
         rows = [(word, str(count)) for word, count in sorted_words]
         write_csv(rows, output_file, header=("word", "count"))
         
@@ -156,7 +104,6 @@ def main_multiple(input_files: List[str], per_file_output: str, total_output: st
             sys.exit(1)
 
     per_file_data.sort(key=lambda x: (x[0], -int(x[2]), x[1]))
-
     write_csv(per_file_data, per_file_output, header=("file", "word", "count"))
 
     sorted_total = top_n(all_word_freq, len(all_word_freq))

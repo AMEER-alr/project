@@ -685,3 +685,290 @@ if __name__ == "__main__":
 ![alt text](images/lab04/image-02-(4)(8).png)
 
 ![alt text](images/lab04/image-02-(4)(9).png)
+
+
+
+
+
+## lab05
+
+
+## ex01
+```python
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent.parent.parent))
+try:
+    from scr.lib.io_helpers import read_json, write_json, read_csv, write_csv
+except ImportError:
+    import os
+    lib_path = Path(__file__).parent.parent / "lib"
+    sys.path.append(str(lib_path))
+    from io_helpers import read_json, write_json, read_csv, write_csv
+
+
+def json_to_csv(json_path: str, csv_path: str) -> None:
+    try:
+        data = read_json(json_path)
+
+        if not isinstance(data, list):
+            raise ValueError("JSON должен содержать список объектов")
+        
+        if len(data) == 0:
+            raise ValueError("JSON файл пуст")
+
+        for item in data:
+            if not isinstance(item, dict):
+                raise ValueError("Все элементы JSON должны быть словарями")
+
+        all_fields = set()
+        for item in data:
+            all_fields.update(item.keys())
+
+        first_item_fields = list(data[0].keys())
+        additional_fields = sorted(all_fields - set(first_item_fields))
+        fieldnames = first_item_fields + additional_fields
+
+        processed_data = []
+        for item in data:
+            row = {field: item.get(field, "") for field in fieldnames}
+            processed_data.append(row)
+
+        write_csv(processed_data, csv_path, fieldnames)
+        
+    except (FileNotFoundError, ValueError) as e:
+        raise e
+    except Exception as e:
+        raise ValueError(f"Ошибка при преобразовании JSON в CSV: {e}")
+
+
+def csv_to_json(csv_path: str, json_path: str) -> None:
+    try:
+        data = read_csv(csv_path)
+
+        write_json(data, json_path)
+        
+    except (FileNotFoundError, ValueError) as e:
+        raise e
+    except Exception as e:
+        raise ValueError(f"Ошибка при преобразовании CSV в JSON: {e}")
+
+
+if __name__ == "__main__":
+    try:
+        print("=== Тестирование JSON ↔ CSV ===")
+
+        current_dir = Path(__file__).parent
+        samples_dir = current_dir / "../../data/samples"
+        out_dir = current_dir / "../../data/out"
+
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        print("1. Конвертация JSON to CSV...")
+        json_to_csv(
+            str(samples_dir / "people.json"),
+            str(out_dir / "people_from_json.csv")
+        )
+        print("✓ Успешно преобразован JSON в CSV")
+
+        print("2. Конвертация CSV to JSON...")
+        csv_to_json(
+            str(samples_dir / "people.csv"),
+            str(out_dir / "people_from_csv.json")
+        )
+        print("✓ Успешно преобразован CSV в JSON")
+        
+        print("✓ Все операции завершены успешно!")
+        
+    except Exception as e:
+        print(f"❌ Ошибка: {e}")
+
+
+```
+![alt text](images/lab05/image-01-(5)(1).png)
+
+![alt text](images/lab05/image-01-(5)(2).png)
+
+![alt text](images/lab05/image-01-(5)(3).png)
+
+![alt text](images/lab05/image-01-(5)(4).png)
+
+![alt text](images/lab05/image-01-(5)(5).png)
+
+
+
+
+
+## ex02
+```python
+import csv
+from openpyxl import Workbook
+from openpyxl.utils import get_column_letter
+from pathlib import Path
+
+
+def csv_to_xlsx(csv_path: str, xlsx_path: str) -> None:
+    try:
+        csv_path_obj = Path(csv_path)
+        if not csv_path_obj.exists():
+            raise FileNotFoundError(f"CSV файл не найден: {csv_path}")
+
+        xlsx_dir = Path(xlsx_path).parent
+        xlsx_dir.mkdir(parents=True, exist_ok=True)
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Sheet1"
+
+        with open(csv_path, 'r', encoding='utf-8') as csv_file:
+            reader = csv.reader(csv_file)
+            for row in reader:
+                ws.append(row)
+
+        if ws.max_row == 0:
+            raise ValueError("CSV файл пуст")
+
+        for col in range(1, ws.max_column + 1):
+            max_length = 0
+            column_letter = get_column_letter(col)
+            
+            for row in range(1, ws.max_row + 1):
+                cell_value = ws.cell(row=row, column=col).value
+                if cell_value:
+                    max_length = max(max_length, len(str(cell_value)))
+
+            adjusted_width = max(max_length + 2, 8)
+            ws.column_dimensions[column_letter].width = adjusted_width
+
+        wb.save(xlsx_path)
+        print(f"✓ Успешно создан XLSX файл: {xlsx_path}")
+        
+    except FileNotFoundError as e:
+        raise e
+    except ValueError as e:
+        raise e
+    except Exception as e:
+        raise ValueError(f"Ошибка при преобразовании CSV в XLSX: {e}")
+
+
+if __name__ == "__main__":
+    try:
+        print("=== Тестирование CSV to XLSX ===")
+
+        current_dir = Path(__file__).parent
+        samples_dir = current_dir / "../../data/samples"
+        out_dir = current_dir / "../../data/out"
+
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        print("1. Конвертация people.csv...")
+        csv_to_xlsx(
+            str(samples_dir / "people.csv"),
+            str(out_dir / "people.xlsx")
+        )
+
+        cities_csv = samples_dir / "cities.csv"
+        if cities_csv.exists():
+            print("2. Конвертация cities.csv...")
+            csv_to_xlsx(
+                str(cities_csv),
+                str(out_dir / "cities.xlsx")
+            )
+        else:
+            print("2. cities.csv не найден, пропускаем")
+            
+        print("✓ Все операции завершены успешно!")
+        
+    except Exception as e:
+        print(f"❌ Ошибка: {e}")
+
+
+```
+![alt text](images/lab05/image-02-(5)(1).png)
+
+![alt text](images/lab05/image-02-(5)(2).png)
+
+![alt text](images/lab05/image-02-(5)(3).png)
+
+![alt text](images/lab05/image-02-(5)(4).png)
+
+![alt text](images/lab05/image-02-(5)(5).png)
+
+
+## lib
+```python
+import json
+import csv
+from pathlib import Path
+from typing import Union, List, Dict, Any
+
+
+def read_json(file_path: Union[str, Path]) -> Any:
+    path = Path(file_path)
+    if not path.exists():
+        raise FileNotFoundError(f"JSON файл не найден: {file_path}")
+    
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        if data is None:
+            raise ValueError(f"JSON файл пуст: {file_path}")
+            
+        return data
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Неверный формат JSON в файле: {file_path}")
+
+
+def write_json(data: Any, file_path: Union[str, Path], indent: int = 2) -> None:
+    path = Path(file_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=indent)
+
+
+def read_csv(file_path: Union[str, Path]) -> List[Dict[str, str]]:
+    path = Path(file_path)
+    if not path.exists():
+        raise FileNotFoundError(f"CSV файл не найден: {file_path}")
+    
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            data = list(reader)
+            
+        if not data:
+            raise ValueError(f"CSV файл пуст: {file_path}")
+            
+        return data
+    except Exception as e:
+        raise ValueError(f"Ошибка чтения CSV {file_path}: {e}")
+
+
+def write_csv(data: List[Dict[str, Any]], file_path: Union[str, Path], fieldnames: list = None) -> None:
+    if not data:
+        raise ValueError("Данные пусты")
+    
+    path = Path(file_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    
+    if fieldnames is None:
+        fieldnames = list(data[0].keys())
+    
+    with open(path, 'w', encoding='utf-8', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(data)
+
+
+def ensure_directory(dir_path: Union[str, Path]) -> Path:
+    path = Path(dir_path)
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def validate_file_exists(file_path: Union[str, Path]) -> bool:
+    path = Path(file_path)
+    return path.exists() and path.stat().st_size > 0

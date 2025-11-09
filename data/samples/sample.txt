@@ -1,0 +1,4 @@
+Hello world this is a sample text file
+Hello again world this is a test
+Sample text for word frequency analysis
+Hello world test sample

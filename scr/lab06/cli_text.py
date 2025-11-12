@@ -1,6 +1,6 @@
 import argparse
 import sys
-import os
+
 
 def read_file_lines(file_path):
     try:

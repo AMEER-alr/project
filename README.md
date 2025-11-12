@@ -933,7 +933,6 @@ def validate_file_exists(file_path: Union[str, Path]) -> bool:
 ```python
 import argparse
 import sys
-import os
 
 def read_file_lines(file_path):
     try:

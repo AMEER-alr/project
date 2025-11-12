@@ -1,0 +1,14 @@
+cli_convert :
+
+python -m scr.lab06.cli_convert --help
+python -m scr.lab06.cli_convert json2csv --in input.json --out output.csv
+python -m scr.lab06.cli_convert csv2json --in input.csv --out output.json
+python -m scr.lab06.cli_convert csv2xlsx --in input.csv --out output.xlsx
+
+
+cli_text :
+
+python -m scr.lab06.cli_text --help
+python -m scr.lab06.cli_text cat --input data/samples/people.csv1 -n
+python -m scr.lab06.cli_text cat --input data/samples/people.csv1 -n
+python -m scr.lab06.cli_text stats --input data/samples/people.csv1 -n

@@ -1,19 +1,19 @@
 def min_max(sequence):
     if not isinstance(sequence, (list, tuple)):
         raise TypeError(f"{sequence} is not list or tuple")
-    
+
     if len(sequence) == 0:
         raise ValueError("Sequence cannot be empty")
-    
+
     min_val = sequence[0]
     max_val = sequence[0]
-    
+
     for element in sequence:
         if element < min_val:
             min_val = element
         if element > max_val:
             max_val = element
-    
+
     return (min_val, max_val)
 
 
@@ -27,16 +27,16 @@ def unique_sorted(sequence):
 def flatten(matrix):
     if not isinstance(matrix, (list, tuple)):
         raise TypeError(f"{matrix} is not list or tuple")
-    
+
     result = []
-    
+
     for row in matrix:
         if not isinstance(row, (list, tuple)):
             raise TypeError(f"{row} is not list or tuple")
-        
+
         for element in row:
             result.append(element)
-    
+
     return result
 
 

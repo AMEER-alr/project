@@ -5,12 +5,16 @@ import os
 try:
     import importlib.util
 
-    json_csv_path = os.path.join(os.path.dirname(__file__), '..', 'lab05', 'json_csv.py')
+    json_csv_path = os.path.join(
+        os.path.dirname(__file__), "..", "lab05", "json_csv.py"
+    )
     spec = importlib.util.spec_from_file_location("json_csv", json_csv_path)
     json_csv = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(json_csv)
 
-    csv_xlsx_path = os.path.join(os.path.dirname(__file__), '..', 'lab05', 'csv_xlsx.py')
+    csv_xlsx_path = os.path.join(
+        os.path.dirname(__file__), "..", "lab05", "csv_xlsx.py"
+    )
     spec = importlib.util.spec_from_file_location("csv_xlsx", csv_xlsx_path)
     csv_xlsx = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(csv_xlsx)
@@ -18,10 +22,11 @@ try:
     json_to_csv = json_csv.json_to_csv
     csv_to_json = json_csv.csv_to_json
     csv_to_xlsx = csv_xlsx.csv_to_xlsx
-    
+
 except ImportError as e:
     print(f"Import error: {e}")
     sys.exit(1)
+
 
 def json2csv_command(args):
     try:
@@ -31,6 +36,7 @@ def json2csv_command(args):
         print(f"Error: {e}")
         sys.exit(1)
 
+
 def csv2json_command(args):
     try:
         csv_to_json(args.input, args.output)
@@ -39,6 +45,7 @@ def csv2json_command(args):
         print(f"Error: {e}")
         sys.exit(1)
 
+
 def csv2xlsx_command(args):
     try:
         csv_to_xlsx(args.input, args.output)
@@ -46,6 +53,7 @@ def csv2xlsx_command(args):
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
+
 
 def main():
     parser = argparse.ArgumentParser(description="Data Conversion Tools")
@@ -68,6 +76,7 @@ def main():
 
     args = parser.parse_args()
     args.func(args)
+
 
 if __name__ == "__main__":
     main()

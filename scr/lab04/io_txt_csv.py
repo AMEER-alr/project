@@ -5,30 +5,35 @@ from typing import Union, Tuple, List
 
 def read_text(path: Union[str, Path], encoding: str = "utf-8") -> str:
     path = Path(path)
-    
-    with open(path, 'r', encoding=encoding) as file:
+
+    with open(path, "r", encoding=encoding) as file:
         content = file.read()
-    
+
     return content
 
 
-def write_csv(rows: List[Union[tuple, list]], path: Union[str, Path], 
-              header: Tuple[str, ...] = None) -> None:
+def write_csv(
+    rows: List[Union[tuple, list]],
+    path: Union[str, Path],
+    header: Tuple[str, ...] = None,
+) -> None:
     path = Path(path)
     ensure_parent_dir(path)
-    
+
     if rows:
         first_length = len(rows[0])
         for i, row in enumerate(rows):
             if len(row) != first_length:
-                raise ValueError(f"Строка {i} имеет длину {len(row)}, ожидается {first_length}")
-    
-    with open(path, 'w', newline='', encoding='utf-8') as file:
-        writer = csv.writer(file, delimiter=',')
-        
+                raise ValueError(
+                    f"Строка {i} имеет длину {len(row)}, ожидается {first_length}"
+                )
+
+    with open(path, "w", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file, delimiter=",")
+
         if header is not None:
             writer.writerow(header)
-        
+
         writer.writerows(rows)
 
 

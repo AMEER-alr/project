@@ -17,7 +17,7 @@ def csv_to_xlsx(csv_path: str, xlsx_path: str) -> None:
         ws = wb.active
         ws.title = "Sheet1"
 
-        with open(csv_path, 'r', encoding='utf-8') as csv_file:
+        with open(csv_path, "r", encoding="utf-8") as csv_file:
             reader = csv.reader(csv_file)
             for row in reader:
                 ws.append(row)
@@ -28,7 +28,7 @@ def csv_to_xlsx(csv_path: str, xlsx_path: str) -> None:
         for col in range(1, ws.max_column + 1):
             max_length = 0
             column_letter = get_column_letter(col)
-            
+
             for row in range(1, ws.max_row + 1):
                 cell_value = ws.cell(row=row, column=col).value
                 if cell_value:
@@ -39,7 +39,7 @@ def csv_to_xlsx(csv_path: str, xlsx_path: str) -> None:
 
         wb.save(xlsx_path)
         print(f"✓ Успешно создан XLSX файл: {xlsx_path}")
-        
+
     except FileNotFoundError as e:
         raise e
     except ValueError as e:
@@ -59,22 +59,16 @@ if __name__ == "__main__":
         out_dir.mkdir(parents=True, exist_ok=True)
 
         print("1. Конвертация people.csv...")
-        csv_to_xlsx(
-            str(samples_dir / "people.csv"),
-            str(out_dir / "people.xlsx")
-        )
+        csv_to_xlsx(str(samples_dir / "people.csv"), str(out_dir / "people.xlsx"))
 
         cities_csv = samples_dir / "cities.csv"
         if cities_csv.exists():
             print("2. Конвертация cities.csv...")
-            csv_to_xlsx(
-                str(cities_csv),
-                str(out_dir / "cities.xlsx")
-            )
+            csv_to_xlsx(str(cities_csv), str(out_dir / "cities.xlsx"))
         else:
             print("2. cities.csv не найден, пропускаем")
-            
+
         print("✓ Все операции завершены успешно!")
-        
+
     except Exception as e:
         print(f"❌ Ошибка: {e}")

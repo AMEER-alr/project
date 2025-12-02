@@ -1,26 +1,17 @@
 [
   {
-    "id": "1",
-    "name": "Ahmed",
-    "age": "25",
-    "city": "Cairo"
-  },
-  {
-    "id": "2",
-    "name": "Sara",
-    "age": "30",
-    "city": "Alexandria"
-  },
-  {
-    "id": "3",
-    "name": "Mohamed",
+    "name": "Alice",
     "age": "22",
-    "city": "Giza"
+    "city": "SPB"
   },
   {
-    "id": "4",
-    "name": "Fatima",
-    "age": "28",
-    "city": "Luxor"
+    "name": "Bob",
+    "age": "25",
+    "city": "Moscow"
+  },
+  {
+    "name": "Charlie",
+    "age": "30",
+    "city": null
   }
 ]

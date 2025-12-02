@@ -641,6 +641,16 @@ if __name__ == "__main__":
 ## lab05
 
 
+## __init__.py
+```python
+
+from .json_to_csv import json_to_csv, csv_to_json
+from .csv_to_xlsx import csv_to_xlsx
+
+__all__ = ['json_to_csv', 'csv_to_json', 'csv_to_xlsx']
+
+```
+
 ## ex01
 ```python
 import sys
@@ -1104,3 +1114,205 @@ if __name__ == "__main__":
 ![alt text](images/lab06/image-02-(6)(4).png)
 
 ![alt text](images/lab06/image-02-(6)(5).png)
+
+
+
+
+
+## lab07
+
+
+## test_json_csv.py
+```python
+import pytest
+import json
+import csv
+from pathlib import Path
+from scr.lab05.json_csv import json_to_csv, csv_to_json
+
+
+class TestJsonToCsv:
+    def test_json_to_csv_basic(self, tmp_path):
+        scr = tmp_path / "test.json"
+        dst = tmp_path / "test.csv"
+        data = [
+            {"name": "Alice", "age": 22},
+            {"name": "Bob", "age": 25},
+        ]
+        scr.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+        json_to_csv(str(scr), str(dst))
+        with dst.open(encoding="utf-8") as f:
+            rows = list(csv.DictReader(f))
+        assert len(rows) == 2
+        assert {"name", "age"} <= set(rows[0].keys())
+        assert rows[0]["name"] == "Alice"
+        assert rows[0]["age"] == "22"
+        assert rows[1]["name"] == "Bob"
+        assert rows[1]["age"] == "25"
+
+    def test_json_to_csv_empty_file(self, tmp_path):
+        scr = tmp_path / "empty.json"
+        dst = tmp_path / "empty.csv"
+        scr.write_text("", encoding="utf-8")
+        with pytest.raises(ValueError):
+            json_to_csv(str(scr), str(dst))
+
+    def test_json_to_csv_invalid_json(self, tmp_path):
+        scr = tmp_path / "invalid.json"
+        dst = tmp_path / "invalid.csv"
+        scr.write_text("{invalid json}", encoding="utf-8")
+        with pytest.raises(ValueError):
+            json_to_csv(str(scr), str(dst))
+
+    def test_json_to_csv_file_not_found(self):
+        with pytest.raises(FileNotFoundError):
+            json_to_csv("nonexistent.json", "output.csv")
+
+
+class TestCsvToJson:
+    def test_csv_to_json_basic(self, tmp_path):
+        scr = tmp_path / "test.csv"
+        dst = tmp_path / "test.json"
+        csv_content = "name,age\nAlice,22\nBob,25\n"
+        scr.write_text(csv_content, encoding="utf-8")
+        csv_to_json(str(scr), str(dst))
+        with dst.open(encoding="utf-8") as f:
+            data = json.load(f)
+        assert len(data) == 2
+        assert data[0]["name"] == "Alice"
+        assert int(data[0]["age"]) == 22
+        assert data[1]["name"] == "Bob"
+        assert int(data[1]["age"]) == 25
+
+    def test_csv_to_json_empty_file(self, tmp_path):
+        scr = tmp_path / "empty.csv"
+        dst = tmp_path / "empty.json"
+        scr.write_text("", encoding="utf-8")
+        with pytest.raises(ValueError):
+            csv_to_json(str(scr), str(dst))
+
+    def test_csv_to_json_invalid_csv(self, tmp_path):
+        scr = tmp_path / "invalid.csv"
+        dst = tmp_path / "invalid.json"
+        scr.write_text("invalid,csv,content\nline1\nline2", encoding="utf-8")
+        try:
+            csv_to_json(str(scr), str(dst))
+        except ValueError:
+            pass
+
+    def test_csv_to_json_file_not_found(self):
+        with pytest.raises(FileNotFoundError):
+            csv_to_json("nonexistent.csv", "output.json")
+
+    def test_csv_to_json_roundtrip(self, tmp_path):
+        scr_json = tmp_path / "original.json"
+        intermediate_csv = tmp_path / "intermediate.csv"
+        final_json = tmp_path / "final.json"
+        original_data = [
+            {"name": "Alice", "age": 22},
+            {"name": "Bob", "age": 25},
+        ]
+        scr_json.write_text(
+            json.dumps(original_data, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+        json_to_csv(str(scr_json), str(intermediate_csv))
+        csv_to_json(str(intermediate_csv), str(final_json))
+        with final_json.open(encoding="utf-8") as f:
+            final_data = json.load(f)
+        converted_data = []
+        for item in final_data:
+            converted_item = item.copy()
+            if "age" in converted_item:
+                converted_item["age"] = int(converted_item["age"])
+            converted_data.append(converted_item)
+        assert converted_data == original_data
+```
+
+
+## test_text.py
+```python
+import pytest
+from scr.lib.text import normalize, tokenize, count_freq, top_n
+
+
+class TestNormalize:
+    @pytest.mark.parametrize(
+        "source, expected",
+        [
+            ("Привёт\vnWψv\t", "привет nwψv"),
+            ("Ежик, Елка", "ежик, елка"),
+            ("Hello\vr\vnworld", "hello r nworld"),
+            ("   двойные   пробелы   ", "двойные пробелы"),
+            ("", ""),
+            ("   ", ""),
+            ("ТЕСТ123", "тест123"),
+            ("Спец.символы!@#", "спец.символы!@#"),
+        ],
+    )
+    def test_normalize_basic(self, source, expected):
+        assert normalize(source) == expected
+
+
+class TestTokenize:
+    @pytest.mark.parametrize(
+        "text, expected",
+        [
+            ("привет мир", ["привет", "мир"]),
+            ("hello world test", ["hello", "world", "test"]),
+            ("один, два. три!", ["один", "два", "три"]),
+            ("", []),
+            ("   ", []),
+            ("много    пробелов", ["много", "пробелов"]),
+        ],
+    )
+    def test_tokenize_basic(self, text, expected):
+        assert tokenize(text) == expected
+
+
+class TestCountFreq:
+    def test_count_freq_basic(self):
+        tokens = ["apple", "banana", "apple", "cherry", "banana", "apple"]
+        result = count_freq(tokens)
+        expected = {"apple": 3, "banana": 2, "cherry": 1}
+        assert result == expected
+
+    def test_count_freq_empty(self):
+        assert count_freq([]) == {}
+
+    def test_count_freq_single_word(self):
+        assert count_freq(["test"]) == {"test": 1}
+
+
+class TestTopN:
+    def test_top_n_basic(self):
+        freq = {"apple": 5, "banana": 3, "cherry": 7, "date": 2}
+        result = top_n(freq, 2)
+        expected = [("cherry", 7), ("apple", 5)]
+        assert result == expected
+
+    def test_top_n_tie_breaker(self):
+        freq = {"apple": 5, "banana": 5, "cherry": 3, "date": 5}
+        result = top_n(freq, 3)
+        expected = [("apple", 5), ("banana", 5), ("date", 5)]
+        assert result == expected
+
+    def test_top_n_more_than_available(self):
+        freq = {"a": 1, "b": 2}
+        result = top_n(freq, 5)
+        expected = [("b", 2), ("a", 1)]
+        assert result == expected
+
+    def test_top_n_empty(self):
+        assert top_n({}, 5) == []
+
+
+```
+![alt text](images/lab07/image-01-(7)(1).png)
+
+![alt text](images/lab07/image-01-(7)(2).png)
+
+![alt text](images/lab07/image-01-(7)(3).png)
+
+![alt text](images/lab07/image-01-(7)(4).png)
+
+![alt text](images/lab07/image-01-(7)(5).png)

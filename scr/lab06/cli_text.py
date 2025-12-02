@@ -4,7 +4,7 @@ import sys
 
 def read_file_lines(file_path):
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             lines = f.readlines()
         return lines
     except FileNotFoundError:
@@ -14,10 +14,11 @@ def read_file_lines(file_path):
         print(f"Error reading file: {e}")
         sys.exit(1)
 
+
 def word_frequency_analysis(text, top_n=5):
     words = text.lower().split()
     word_count = {}
-    
+
     for word in words:
         word = word.strip('.,!?;:"()[]{}')
         if word:
@@ -25,6 +26,7 @@ def word_frequency_analysis(text, top_n=5):
 
     sorted_words = sorted(word_count.items(), key=lambda x: x[1], reverse=True)
     return sorted_words[:top_n]
+
 
 def cat_command(args):
     lines = read_file_lines(args.input)
@@ -34,22 +36,24 @@ def cat_command(args):
         else:
             print(line.rstrip())
 
+
 def stats_command(args):
     try:
-        with open(args.input, 'r', encoding='utf-8') as f:
+        with open(args.input, "r", encoding="utf-8") as f:
             text = f.read()
-        
+
         top_words = word_frequency_analysis(text, args.top)
         print(f"Top {args.top} most frequent words:")
         for i, (word, count) in enumerate(top_words, 1):
             print(f"{i}. '{word}': {count} occurrences")
-            
+
     except FileNotFoundError:
         print(f"Error: File not found: {args.input}")
         sys.exit(1)
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
+
 
 def main():
     parser = argparse.ArgumentParser(description="CLI Text Tools")
@@ -67,6 +71,7 @@ def main():
 
     args = parser.parse_args()
     args.func(args)
+
 
 if __name__ == "__main__":
     main()

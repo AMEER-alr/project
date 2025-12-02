@@ -6,6 +6,7 @@ try:
     from scr.lib.io_helpers import read_json, write_json, read_csv, write_csv
 except ImportError:
     import os
+
     lib_path = Path(__file__).parent.parent / "lib"
     sys.path.append(str(lib_path))
     from io_helpers import read_json, write_json, read_csv, write_csv
@@ -17,7 +18,7 @@ def json_to_csv(json_path: str, csv_path: str) -> None:
 
         if not isinstance(data, list):
             raise ValueError("JSON должен содержать список объектов")
-        
+
         if len(data) == 0:
             raise ValueError("JSON файл пуст")
 
@@ -39,7 +40,7 @@ def json_to_csv(json_path: str, csv_path: str) -> None:
             processed_data.append(row)
 
         write_csv(processed_data, csv_path, fieldnames)
-        
+
     except (FileNotFoundError, ValueError) as e:
         raise e
     except Exception as e:
@@ -51,7 +52,7 @@ def csv_to_json(csv_path: str, json_path: str) -> None:
         data = read_csv(csv_path)
 
         write_json(data, json_path)
-        
+
     except (FileNotFoundError, ValueError) as e:
         raise e
     except Exception as e:
@@ -70,19 +71,17 @@ if __name__ == "__main__":
 
         print("1. Конвертация JSON to CSV...")
         json_to_csv(
-            str(samples_dir / "people.json"),
-            str(out_dir / "people_from_json.csv")
+            str(samples_dir / "people.json"), str(out_dir / "people_from_json.csv")
         )
         print("✓ Успешно преобразован JSON в CSV")
 
         print("2. Конвертация CSV to JSON...")
         csv_to_json(
-            str(samples_dir / "people.csv"),
-            str(out_dir / "people_from_csv.json")
+            str(samples_dir / "people.csv"), str(out_dir / "people_from_csv.json")
         )
         print("✓ Успешно преобразован CSV в JSON")
-        
+
         print("✓ Все операции завершены успешно!")
-        
+
     except Exception as e:
         print(f"❌ Ошибка: {e}")

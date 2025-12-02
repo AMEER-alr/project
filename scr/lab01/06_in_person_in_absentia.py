@@ -7,10 +7,10 @@ for _ in range(n):
     line = input().split()
 
     format_type = line[-1]
-    
+
     if format_type == "True":
         on_campus += 1
-    else :
+    else:
         online += 1
 
 print(on_campus, online)

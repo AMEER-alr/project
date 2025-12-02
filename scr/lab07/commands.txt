@@ -1,0 +1,26 @@
+Установка инструментов
+pip install black pytest pytest-cov
+
+
+Выполнить все тесты
+python -m pytest tests/
+
+
+Запускать только тесты JSON_CSV
+python -m pytest tests/test_json_csv.py
+
+
+Запуск текстовых тестов
+python -m pytest tests/test_text.py
+
+
+Проверить покрытие
+python -m pytest --cov=scr --cov-report=term-missing
+
+
+Формат кода
+python -m black .
+
+
+Проверьте формат без изменений.
+python -m black --check .

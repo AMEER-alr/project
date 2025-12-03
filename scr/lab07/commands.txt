@@ -24,3 +24,7 @@ python -m black .
 
 Проверьте формат без изменений.
 python -m black --check .
+
+
+
+python -m pytest --cov=scr.lib.text --cov-report=term-missing tests/test_text.py

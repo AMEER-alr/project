@@ -1228,6 +1228,15 @@ class TestCsvToJson:
         assert converted_data == original_data
 ```
 
+![alt text](images/lab07/image-01-(7)(1).png)
+
+![alt text](images/lab07/image-01-(7)(2).png)
+
+![alt text](images/lab07/image-01-(7)(3).png)
+
+
+
+
 
 ## test_text.py
 ```python
@@ -1307,15 +1316,14 @@ class TestTopN:
 
 
 ```
-![alt text](images/lab07/image-01-(7)(1).png)
+![alt text](images/lab07/image-02-(7)(1).png)
 
-![alt text](images/lab07/image-01-(7)(2).png)
+![alt text](images/lab07/image-02-(7)(2).png)
 
-![alt text](images/lab07/image-01-(7)(3).png)
+![alt text](images/lab07/image-02-(7)(3).png)
 
 ![alt text](images/lab07/image-01-(7)(4).png)
 
-![alt text](images/lab07/image-01-(7)(5).png)
 
 
 

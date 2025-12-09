@@ -1,0 +1,41 @@
+import sys
+sys.path.append('.')
+from scr.lib.lab08.models import Student
+s1 = Student("Иванов Иван", "2000-05-15", "SE-01", 4.5)
+print(s1)
+print(s1.age())
+print(s1.to_dict())
+
+
+
+
+from scr.lib.lab08.serialize import students_to_json
+s2 = Student("Петрова Анна", "2001-08-22", "AI-02", 3.8)
+s3 = Student("Сидоров Алексей", "1999-12-10", "CS-03", 4.9)
+students_to_json([s1, s2, s3], "data/lab08/output.json")
+
+
+
+
+from scr.lib.lab08.serialize import students_from_json
+loaded = students_from_json("data/lab08/students_input.json")
+for s in loaded:
+    print(s)
+
+
+
+
+
+try:
+    Student("Тест", "2024-13-45", "GR-01", 3.0)
+except ValueError as e:
+    print(f"Ошибка: {e}")
+
+
+
+
+
+try:
+    Student("Тест", "2000-01-01", "GR-01", 6.0)
+except ValueError as e:
+    print(f"Ошибка GPA: {e}")

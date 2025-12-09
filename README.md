@@ -1228,6 +1228,7 @@ class TestCsvToJson:
         assert converted_data == original_data
 ```
 
+
 ![alt text](images/lab07/image-01-(7)(1).png)
 
 ![alt text](images/lab07/image-01-(7)(2).png)
@@ -1327,25 +1328,127 @@ class TestTopN:
 
 
 
-## README.md lab07
-# Лабораторная работа 7: Тестирование и покрытие кода
 
-## 📊 Результаты выполнения
+## lab08
 
-### ✅ Тестирование
-- Всего тестов: **30**
-- Успешно пройдено: **30** (100%)
-- Провалено: **0**
 
-### 📁 Тестовые файлы:
-1. `tests/test_text.py` - тесты для функций модуля `text.py`:
-   - `normalize()` - 8 тестов
-   - `tokenize()` - 6 тестов  
-   - `count_freq()` - 3 теста
-   - `top_n()` - 4 теста
-   
-2. `tests/test_json_csv.py` - тесты для функций `json_csv.py`:
-   - `json_to_csv()` - 4 теста
-   - `csv_to_json()` - 5 тестов
+## models.py
+```python
+from dataclasses import dataclass
+from datetime import datetime, date
+from typing import Self
 
-### 🎯 Покрытие кода (coverage)
+@dataclass
+class Student:
+    fio: str
+    birthdate: str
+    group: str
+    gpa: float
+    
+    def __post_init__(self):
+        try:
+            datetime.strptime(self.birthdate, "%Y-%m-%d")
+        except ValueError:
+            raise ValueError(f"Некорректный формат даты: {self.birthdate}. Ожидается YYYY-MM-DD")
+        
+        if not (0 <= self.gpa <= 5):
+            raise ValueError(f"GPA должен быть в диапазоне от 0 до 5. Получено: {self.gpa}")
+    
+    def age(self) -> int:
+        b = datetime.strptime(self.birthdate, "%Y-%m-%d").date()
+        today = date.today()
+        age = today.year - b.year
+        
+        if (today.month, today.day) < (b.month, b.day):
+            age -= 1
+        
+        return age
+    
+    def to_dict(self) -> dict:
+        return {
+            "fio": self.fio,
+            "birthdate": self.birthdate,
+            "group": self.group,
+            "gpa": self.gpa
+        }
+    
+    @classmethod
+    def from_dict(cls, d: dict) -> Self:
+        return cls(
+            fio=d["fio"],
+            birthdate=d["birthdate"],
+            group=d["group"],
+            gpa=d["gpa"]
+        )
+    
+    def __str__(self) -> str:
+        return f"{self.fio}, группа {self.group}, GPA: {self.gpa:.2f}, возраст: {self.age()} лет"
+```
+
+
+
+
+
+## serialize.py
+```python
+import json
+from .models import Student
+from typing import List
+
+def students_to_json(students: List[Student], path: str) -> None:
+    data = [s.to_dict() for s in students]
+    
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    
+    print(f"Данные успешно сохранены в {path}")
+
+def students_from_json(path: str) -> List[Student]:
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        students = []
+        for item in data:
+            try:
+                student = Student.from_dict(item)
+                students.append(student)
+            except (ValueError, KeyError) as e:
+                print(f"Ошибка при создании студента из данных: {item}")
+                print(f"Ошибка: {e}")
+        
+        print(f"Загружено {len(students)} студентов из {path}")
+        return students
+    
+    except FileNotFoundError:
+        print(f"Файл {path} не найден!")
+        return []
+    except json.JSONDecodeError:
+        print(f"Ошибка чтения JSON из файла {path}")
+        return []
+```
+
+
+
+
+
+## __init__.py
+```python
+from .models import Student
+from .serialize import students_to_json, students_from_json
+
+__all__ = ['Student', 'students_to_json', 'students_from_json']
+
+
+```
+![alt text](images/lab08/image-01-(8)(1).png)
+
+![alt text](images/lab08/image-01-(8)(2).png)
+
+![alt text](images/lab08/image-01-(8)(3).png)
+
+![alt text](images/lab08/image-01-(8)(4).png)
+
+![alt text](images/lab08/image-01-(8)(5).png)
+
+![alt text](images/lab08/image-01-(8)(6).png)

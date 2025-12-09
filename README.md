@@ -1450,5 +1450,3 @@ __all__ = ['Student', 'students_to_json', 'students_from_json']
 ![alt text](images/lab08/image-01-(8)(4).png)
 
 ![alt text](images/lab08/image-01-(8)(5).png)
-
-![alt text](images/lab08/image-01-(8)(6).png)

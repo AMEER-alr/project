@@ -12,7 +12,7 @@ print(s1.to_dict())
 from scr.lib.lab08.serialize import students_to_json
 s2 = Student("Петрова Анна", "2001-08-22", "AI-02", 3.8)
 s3 = Student("Сидоров Алексей", "1999-12-10", "CS-03", 4.9)
-students_to_json([s1, s2, s3], "data/lab08/output.json")
+students_to_json([s1, s2, s3], "data/lab08/students_output.json")
 
 
 

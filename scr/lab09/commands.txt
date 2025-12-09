@@ -1,0 +1,135 @@
+import sys
+sys.path.append('.')
+from scr.lib.lab09.group import Group
+from scr.lib.lab08.models import Student
+
+print("=" * 50)
+print("1. Импорт и создание Group")
+print("=" * 50)
+
+group = Group("data/lab09/students.csv")
+print(f"✅ Создана группа с файлом: data/lab09/students.csv")
+print(f"✅ Тип объекта: {type(group)}")
+
+
+
+
+
+
+print("\n" + "=" * 50)
+print("2. Список всех студентов (list())")
+print("=" * 50)
+
+students = group.list()
+print(f"✅ Найдено студентов: {len(students)}")
+
+for i, s in enumerate(students, 1):
+    print(f"{i}. {s}")
+
+
+
+
+
+
+print("\n" + "=" * 50)
+print("3. Добавление нового студента (add())")
+print("=" * 50)
+
+new_student = Student("Новенький Студент", "2002-06-15", "БИВТ-22-1", 4.3)
+print(f"✅ Новый студент: {new_student}")
+
+group.add(new_student)
+print("✅ Студент добавлен в CSV файл")
+
+
+
+
+
+
+print("\n" + "=" * 50)
+print("4. Поиск студентов (find())")
+print("=" * 50)
+
+search_term = "Иванов"
+print(f"🔍 Поиск: '{search_term}'")
+
+found = group.find(search_term)
+print(f"✅ Найдено студентов: {len(found)}")
+
+for s in found:
+    print(f"   - {s}")
+
+
+
+
+
+
+print("\n" + "=" * 50)
+print("5. Обновление данных (update())")
+print("=" * 50)
+
+student_name = "Иванов Иван Иванович"
+print(f"✏️ Обновление студента: {student_name}")
+print(f"   Старые данные: {group.find(student_name)[0]}")
+
+group.update(student_name, gpa=4.8, group="БИВТ-21-2")
+print("✅ Данные обновлены")
+
+print(f"   Новые данные: {group.find(student_name)[0]}")
+
+
+
+
+
+
+print("\n" + "=" * 50)
+print("6. Удаление студента (remove())")
+print("=" * 50)
+
+student_to_remove = "Петров Петр Петрович"
+print(f"🗑️ Удаление студента: {student_to_remove}")
+
+before = len(group.list())
+group.remove(student_to_remove)
+after = len(group.list())
+
+print(f"✅ Студент удален")
+print(f"   Было студентов: {before}")
+print(f"   Стало студентов: {after}")
+
+
+
+
+
+
+print("\n" + "=" * 50)
+print("7. Итоговый список студентов")
+print("=" * 50)
+
+students = group.list()
+print(f"📊 Всего студентов: {len(students)}")
+
+for i, s in enumerate(students, 1):
+    print(f"{i}. {s}")
+
+
+
+
+
+
+print("\n" + "=" * 50)
+print("8. Статистика группы (stats())")
+print("=" * 50)
+
+try:
+    stats = group.stats()
+    print("📈 Статистика группы:")
+    print(f"   • Всего студентов: {stats['count']}")
+    print(f"   • Средний GPA: {stats['avg_gpa']:.2f}")
+    print(f"   • Минимальный GPA: {stats['min_gpa']}")
+    print(f"   • Максимальный GPA: {stats['max_gpa']}")
+    print(f"   • Распределение по группам:")
+    for group_name, count in stats['groups'].items():
+        print(f"     - {group_name}: {count} студентов")
+except AttributeError:
+    print("⚠️ Метод stats() не реализован")

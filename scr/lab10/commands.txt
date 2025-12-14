@@ -1,0 +1,42 @@
+python
+
+
+from scr.lab10.structures import Stack
+s = Stack()
+s.push(1)
+s.push(2)
+s.push(3)
+s.pop()
+s.peek()
+len(s)
+
+
+
+
+from scr.lab10.structures import Queue
+q = Queue()
+q.enqueue("A")
+q.enqueue("B")
+q.enqueue("C")
+q.dequeue()
+q.peek()
+len(q)
+
+
+
+
+from scr.lab10.linked_list import SinglyLinkedList
+lst = SinglyLinkedList()
+lst.append(1)
+lst.append(2)
+lst.append(3)
+print(lst)
+
+
+
+
+lst.prepend(0)
+lst.insert(2, 99)
+lst.remove_at(1)
+print(lst.pretty())
+len(lst)

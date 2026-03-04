@@ -1,6 +1,6 @@
 import sys
 sys.path.append('.')
-from scr.lib.lab09.group import Group
+from scr.lab09.group import Group
 from scr.lib.lab08.models import Student
 
 print("=" * 50)
@@ -34,6 +34,7 @@ for i, s in enumerate(students, 1):
 print("\n" + "=" * 50)
 print("3. Добавление нового студента (add())")
 print("=" * 50)
+
 
 new_student = Student("Новенький Студент", "2002-06-15", "БИВТ-22-1", 4.3)
 print(f"✅ Новый студент: {new_student}")

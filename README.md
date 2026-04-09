@@ -1826,256 +1826,335 @@ class SinglyLinkedList:
 
 ## lab11
 
+# Лабораторные работы по Python
 
-## model.py
+## Лабораторная работа №11: Класс и инкапсуляция
+
+**Тема:** Медицина (Больничная информационная система)
+
+**Студент:** Альхатиб Амир
+
+**Вариант:** 10 (Медицина)
+
+### Содержание
+- [Цель работы](#цель-работы)
+- [Мыслительный процесс (проектирование)](#мыслительный-процесс-проектирование)
+- [Ответы на вопросы практического занятия №1](#ответы-на-вопросы-практического-занятия-1)
+- [Реализованный класс](#реализованный-класс)
+- [Демонстрация работы](#демонстрация-работы)
+- [Выводы](#выводы)
+
+### Цель работы
+- Освоить объявление пользовательских классов
+- Разобраться с инкапсуляцией (атрибуты экземпляра, закрытые поля)
+- Реализовать свойства (@property)
+- Переопределить магические методы (__str__, __repr__, __eq__, __lt__, __len__)
+- Осознать разницу между атрибутами класса и экземпляра
+- Реализовать валидацию в отдельном модуле
+- Создать объект с изменяемым состоянием и поведением, зависящим от состояния
+
+### Мыслительный процесс (проектирование)
+
+#### 1. Выбор предметной области
+Я выбрал медицину, так как это область с четкой структурой данных и множеством ограничений, что идеально подходит для демонстрации инкапсуляции и валидации.
+
+#### 2. Выбор сущности
+Из предложенных сущностей (Patient, Doctor, Appointment, Prescription, MedicalRecord) я выбрал **Patient (пациент)**, потому что:
+- Пациент имеет множество атрибутов (имя, возраст, диагноз, температура, давление, статус)
+- У пациента есть жизненный цикл (поступление → лечение → выписка/смерть)
+- Можно показать изменение состояния и зависимость поведения от состояния
+- Естественные ограничения для валидации (возраст ≤ 150, температура 30-45°C и т.д.)
+
+#### 3. Проектирование атрибутов
+**Атрибуты класса:**
+- `HOSPITAL_NAME` - название больницы (общее для всех пациентов)
+- `MIN_AGE`, `MAX_AGE` - границы возраста
+- `_next_patient_id` - счетчик для генерации уникальных ID
+
+**Закрытые атрибуты экземпляра (__):**
+- `__name` - имя пациента
+- `__age` - возраст
+- `__diagnosis` - диагноз
+- `__doctor_specialization` - специализация врача
+- `__temperature` - температура тела
+- `__systolic` / `__diastolic` - артериальное давление
+- `__patient_id` - уникальный ID
+- `__status` - статус (активен/на лечении/выписан/умер)
+- `__admission_date` - дата поступления
+- `__discharge_date` - дата выписки
+- `__treatment_history` - история лечения
+
+#### 4. Проектирование методов
+**Бизнес-методы:**
+- `update_vitals()` - обновление показателей
+- `admit_to_hospital()` - госпитализация
+- `discharge()` - выписка
+- `mark_as_deceased()` - отметить как умершего
+- `transfer_to_doctor()` - перевод к другому врачу
+- `add_treatment_note()` - добавление заметки
+
+**Магические методы:**
+- `__str__` - красивый вывод для пользователя
+- `__repr__` - отладочное представление
+- `__eq__` - сравнение по ID
+- `__lt__` - сравнение по возрасту (для сортировки)
+- `__len__` - количество записей в истории
+
+### Ответы на вопросы практического занятия №1
+
+**Вопрос 1: В чем разница между атрибутами класса и атрибутами экземпляра?**
+
+**Ответ:** 
+- **Атрибуты класса** принадлежат самому классу и разделяются между всеми экземплярами. Например, `Patient.HOSPITAL_NAME` - одна переменная для всех пациентов. Изменение атрибута класса отражается на всех объектах.
+- **Атрибуты экземпляра** принадлежат конкретному объекту и уникальны для каждого экземпляра. Например, `patient1.__name` и `patient2.__name` могут быть разными и не влияют друг на друга.
+
+**Вопрос 2: Для чего нужен метод `__init__`?**
+
+**Ответ:**
+Метод `__init__` - это конструктор класса, который автоматически вызывается при создании нового объекта. Он нужен для:
+- Инициализации атрибутов объекта начальными значениями
+- Проверки входных данных (валидации)
+- Выполнения подготовительных действий (например, генерации ID)
+В моем классе `__init__` принимает имя, возраст, диагноз и другие параметры, проверяет их через функции валидации и создает запись в истории лечения.
+
+**Вопрос 3: Что такое инкапсуляция и как она реализуется в Python?**
+
+**Ответ:**
+Инкапсуляция - это сокрытие внутреннего состояния объекта и предоставление доступа к нему только через специальные методы. В Python инкапсуляция реализуется:
+- С помощью соглашений об именах (один подчеркивания `_` для "защищенных" атрибутов)
+- С помощью name mangling (два подчеркивания `__` для "приватных" атрибутов)
+- Через свойства (`@property`) для контролируемого доступа
+
+В моем классе все атрибуты объявлены как `__name`, `__age` и т.д., а доступ к ним осуществляется через свойства с валидацией.
+
+**Вопрос 4: Чем отличается `@property` от обычного метода?**
+
+**Ответ:**
+`@property` позволяет обращаться к методу как к атрибуту (без круглых скобок). Например:
+- Свойство: `patient.name` 
+- Обычный метод: `patient.get_name()`
+
+Преимущества `@property`:
+- Более естественный синтаксис
+- Можно добавить логику при получении значения
+- Можно разделить геттер и сеттер для контроля доступа
+- Вычисляемые свойства (как `days_in_hospital`)
+
+**Вопрос 5: Какие магические методы были реализованы и зачем они нужны?**
+
+**Ответ:**
+- `__str__` - для красивого вывода объекта через `print()`. Возвращает понятную пользователю карту пациента.
+- `__repr__` - для отладки. Возвращает строку, показывающую как создать такой объект.
+- `__eq__` - для сравнения объектов через `==`. Сравнивает пациентов по ID.
+- `__lt__` - для сортировки через `<`. Позволяет сортировать пациентов по возрасту.
+- `__len__` - для получения количества записей через `len(patient)`.
+
+### Реализованный класс
+
 ```python
-class Student:
-    university = "Python University"
-    total_students = 0
+class Patient:
+    HOSPITAL_NAME = "Городская больница №1"
+    MIN_AGE = 0
+    MAX_AGE = 150
+    _next_patient_id = 1000
     
-    def __init__(self, name: str, age: int, gpa: float, student_id: str):
-        self.__name = ""
-        self.__age = 0
-        self.__gpa = 0.0
-        self.__student_id = ""
-        self.__is_active = True
-
-        self.name = name
-        self.age = age
-        self.gpa = gpa
-        self.student_id = student_id
-        
-        Student.total_students += 1
-
-    def _validate_name(self, name: str) -> bool:
-        if not isinstance(name, str):
-            raise TypeError("Name must be a string")
-        if len(name.strip()) == 0:
-            raise ValueError("Name cannot be empty")
-        if len(name) < 2:
-            raise ValueError("Name must be at least 2 characters")
-        return True
-    
-    def _validate_age(self, age: int) -> bool:
-        if not isinstance(age, int):
-            raise TypeError("Age must be an integer")
-        if age < 16 or age > 100:
-            raise ValueError("Age must be between 16 and 100")
-        return True
-    
-    def _validate_gpa(self, gpa: float) -> bool:
-        if not isinstance(gpa, (int, float)):
-            raise TypeError("GPA must be a number")
-        if gpa < 0.0 or gpa > 4.0:
-            raise ValueError("GPA must be between 0.0 and 4.0")
-        return True
-    
-    def _validate_student_id(self, student_id: str) -> bool:
-        if not isinstance(student_id, str):
-            raise TypeError("Student ID must be a string")
-        if not student_id.startswith("STU-"):
-            raise ValueError("Student ID must start with 'STU-'")
-        if len(student_id) != 8:
-            raise ValueError("Student ID must be in format STU-XXXX")
-        return True
+    def __init__(self, name, age, diagnosis, doctor_specialization, 
+                 temperature=36.6, systolic=120, diastolic=80):
+        ...
 
     @property
-    def name(self):
-        return self.__name
+    def name(self): ...
     
     @name.setter
-    def name(self, value):
-        if self._validate_name(value):
-            self.__name = value.strip()
-    
-    @property
-    def age(self):
-        return self.__age
-    
-    @age.setter
-    def age(self, value):
-        if self._validate_age(value):
-            self.__age = value
-    
-    @property
-    def gpa(self):
-        return self.__gpa
-    
-    @gpa.setter
-    def gpa(self, value):
-        if self._validate_gpa(value):
-            self.__gpa = float(value)
-    
-    @property
-    def student_id(self):
-        return self.__student_id
-    
-    @student_id.setter
-    def student_id(self, value):
-        if self._validate_student_id(value):
-            self.__student_id = value
-    
-    @property
-    def is_active(self):
-        return self.__is_active
- 
+    def name(self, new_name): ...
 
-    def update_gpa(self, new_gpa: float) -> bool:
-        try:
-            self.gpa = new_gpa
-            return True
-        except (TypeError, ValueError):
-            return False
-    
-    def promote(self) -> str:
-        if not self.__is_active:
-            return f"{self.__name} is inactive - cannot promote"
-        
-        if self.__gpa >= 2.0:
-            return f"{self.__name} can be promoted (GPA: {self.__gpa:.2f})"
-        else:
-            return f"{self.__name} cannot be promoted - GPA too low ({self.__gpa:.2f})"
-    
-    def activate(self):
-        self.__is_active = True
-        print(f"{self.__name} is now ACTIVE")
-    
-    def deactivate(self):
-        self.__is_active = False
-        print(f"{self.__name} is now INACTIVE")
+    def admit_to_hospital(self): ...
+    def discharge(self): ...
+    def mark_as_deceased(self): ...
 
-    def __str__(self):
-        status = "Active" if self.__is_active else "Inactive"
-        return f"👨‍🎓 {self.__name} | ID: {self.__student_id} | Age: {self.__age} | GPA: {self.__gpa:.2f} | {status}"
-    
-    def __repr__(self):
-        return f"Student(name='{self.__name}', age={self.__age}, gpa={self.__gpa}, student_id='{self.__student_id}')"
-    
-    def __eq__(self, other):
-        if not isinstance(other, Student):
-            return False
-        return (self.__student_id == other.__student_id and 
-                self.__name == other.__name)
-
-
+    def __str__(self): ...
+    def __repr__(self): ...
+    def __eq__(self, other): ...
+    def __lt__(self, other): ...
+    def __len__(self): ...
 ```
-## demo.py
-```python
-from model import Student
-
-def demonstrate_level_3():
-    print("=" * 60)
-    print("LEVEL 3 DEMONSTRATION")
-    print("=" * 60)
-    
-    try:
-        student1 = Student("Ahmed", 20, 3.5, "STU-1234")
-        print("✅ Student created successfully")
-
-        print("\n📌 Student info:")
-        print(student1)
-
-        student2 = Student("Ahmed", 20, 3.5, "STU-1234")
-        student3 = Student("Sara", 22, 3.8, "STU-5678")
-        
-        print(f"\n📌 student1 == student2: {student1 == student2}")
-        print(f"📌 student1 == student3: {student1 == student3}")
-
-        print(f"\n📌 Promotion status: {student1.promote()}")
-
-        print("\n📌 Testing invalid data:")
-        try:
-            invalid_student = Student("", -5, 5.5, "1234")
-        except (TypeError, ValueError) as e:
-            print(f"❌ Error caught: {e}")
-            
-    except Exception as e:
-        print(f"❌ Unexpected error: {e}")
-
-def demonstrate_level_4():
-    print("\n" + "=" * 60)
-    print("LEVEL 4 DEMONSTRATION")
-    print("=" * 60)
-    
-    student = Student("Mohammed", 21, 3.2, "STU-4321")
-
-    print("\n📌 __repr__ output:")
-    print(repr(student))
-
-    print("\n📌 Testing setter with validation:")
-    try:
-        student.gpa = 3.9
-        print(f"✅ GPA updated successfully: {student.gpa}")
-        
-        student.gpa = 5.0
-    except ValueError as e:
-        print(f"❌ GPA update failed: {e}")
-
-    print(f"\n📌 Class attribute (via class): {Student.university}")
-    print(f"📌 Class attribute (via instance): {student.university}")
-    print(f"📌 Total students created: {Student.total_students}")
-
-    print("\n📌 GPA update method:")
-    if student.update_gpa(3.7):
-        print(f"✅ New GPA: {student.gpa}")
-
-    print(f"\n📌 Student GPA: {student.gpa:.2f}")
-
-def demonstrate_level_5():
-    print("\n" + "=" * 60)
-    print("LEVEL 5 DEMONSTRATION")
-    print("=" * 60)
-    
-    student = Student("Fatima", 19, 3.4, "STU-9876")
-
-    print("\n📌 SCENARIO 1: Active student with good GPA")
-    print(student)
-    print(f"Promotion: {student.promote()}")
-    
-    print("\n📌 SCENARIO 2: State change (deactivate)")
-    student.deactivate()
-    print(student)
-    print(f"Promotion: {student.promote()}")
-    
-    print("\n📌 SCENARIO 3: Reactivate and update GPA")
-    student.activate()
-    student.update_gpa(1.5)
-    print(student)
-    print(f"Promotion: {student.promote()}")
-
-    print("\n📌 Testing validation methods:")
-    test_cases = [
-        ("", 20, 3.0, "STU-1111"),
-        ("Ali", 15, 3.0, "STU-2222"),
-        ("Omar", 25, 4.5, "STU-3333"),
-        ("Huda", 22, 3.2, "1234567"),
-    ]
-    
-    for i, (name, age, gpa, sid) in enumerate(test_cases, 1):
-        print(f"\nTest {i}: name='{name}', age={age}, gpa={gpa}, id='{sid}'")
-        try:
-            s = Student(name, age, gpa, sid)
-            print(f"✅ Success: {s}")
-        except (TypeError, ValueError) as e:
-            print(f"❌ Failed: {e}")
-
-def main():
-    print("STUDENT CLASS DEMONSTRATION")
-    print("Developed for Lab 1 - Encapsulation")
-    
-    demonstrate_level_3()
-    demonstrate_level_4()
-    demonstrate_level_5()
-    
-    print("\n" + "=" * 60)
-    print("DEMONSTRATION COMPLETE")
-    print("=" * 60)
-
-if __name__ == "__main__":
-    main()
 
 
-```
-![alt text](images/lab11/image-01-(11)(1).png)
+![alt text](images/lab11/image-01-(11)(1)(1).png)
+
+![alt text](images/lab11/image-01-(11)(1)(2).png)
+
+*На скриншоте: создание трех пациентов с разными параметрами. Patient #PAT1000 - Иван Петров (35 лет, бронхит), Patient #PAT1001 - Мария Иванова (28 лет, гипертония), Patient #PAT1002 - Петр Сидоров (75 лет, пневмония). Каждый получает уникальный ID и красивую карту.*
 
 ![alt text](images/lab11/image-01-(11)(2).png)
+
+*На скриншоте: попытки создать пациентов с некорректными данными: пустое имя, имя из пробелов, слишком короткое имя, имя с цифрами, имя со спецсимволами. Также проверка отрицательного возраста, возраста >150, температуры 50°C и некорректного давления (систолическое < диастолического). Программа перехватывает все ошибки и выводит понятные сообщения.*
+
+![alt text](images/lab11/image-01-(11)(3).png)
+
+*На скриншоте: исходный пациент Анна Смирнова (45 лет, сахарный диабет). Затем изменение имени на 'Анна Петровна Смирнова', возраста на 46 лет, диагноза на 'Сахарный диабет 2 типа'. Попытка изменить patient_id вызывает ошибку, так как это свойство доступно только для чтения.*
+
+![alt text](images/lab11/image-01-(11)(4).png)
+
+*На скриншоте: пациент Сергей Козлов с гипертонией (давление 145/95). Обновление температуры до 37.2°C и давления до 135/85. Добавление двух заметок о лечении. Попытка обновить температуру до 50°C вызывает ошибку валидации.*
+
+![alt text](images/lab11/image-01-(11)(5).png)
+
+*На скриншоте: пациент Ольга Новикова с исходным статусом "активен". После госпитализации статус меняется на "на лечении". Добавление заметки об операции. После выписки статус становится "выписан". Попытка добавить заметку после выписки вызывает ошибку.*
+
+![alt text](images/lab11/image-01-(11)(6).png)
+
+*На скриншоте: пожилой пациент Николай Федоров (82 года) с инфарктом миокарда, температурой 39.5°C и давлением 180/110. Попытка выписки вызывает ошибку (требуется срочная госпитализация). После отметки о смерти статус становится "умер". Попытка обновить показатели после смерти вызывает ошибку.*
+
+![alt text](images/lab11/image-01-(11)(7)(1).png)
+
+*На скриншоте: демонстрация метода __str__ (карта пациента Елены Васильевой), метода __repr__ (отладочное представление), метода __eq__ (сравнение пациентов по ID: p1 == p2 - False, p1 == p3 - True), метода __lt__ (сравнение по возрасту: Молодой (25) < Пожилой (70) - True).*
+
+![alt text](images/lab11/image-01-(11)(7)(2).png)
+
+*На скриншоте: сортировка пациентов по возрасту (до сортировки: Анна 45, Борис 30, Виктор 60; после сортировки: Борис 30, Анна 45, Виктор 60). Демонстрация метода __len__ - количество записей в истории лечения (4 записи).*
+
+
+
+
+
+# Лабораторная работа №12: Коллекции и работа с наборами объектов
+
+**Тема:** Медицина (Больничная информационная система)
+
+**Студент:** Альхатиб Амир
+
+**Вариант:** 10 (Медицина)
+
+---
+
+## Содержание
+- [Цель работы](#цель-работы)
+- [Мыслительный процесс (проектирование)](#мыслительный-процесс-проектирование)
+- [Реализация коллекции](#реализация-коллекции)
+- [Демонстрация работы](#демонстрация-работы)
+- [Выводы](#выводы)
+
+---
+
+## Цель работы
+
+- Научиться работать с коллекциями объектов
+- Реализовать пользовательский класс-коллекцию
+- Освоить методы поиска, сортировки и фильтрации
+- Использовать магические методы (__len__, __iter__, __getitem__)
+- Обеспечить защиту от некорректных данных и дубликатов
+- Построить систему управления группой объектов
+
+---
+
+## Мыслительный процесс (проектирование)
+
+### 1. Выбор предметной области
+Я использовал ту же предметную область — медицина, так как она уже была реализована в предыдущей лабораторной работе.
+
+### 2. Выбор структуры
+В качестве основной сущности используется класс **Patient**.
+
+Для управления несколькими пациентами был создан новый класс:
+
+**PatientCollection**
+
+### 3. Назначение коллекции
+Коллекция отвечает за:
+- хранение пациентов
+- управление списком пациентов
+- поиск и фильтрацию
+- сортировку
+- контроль корректности данных
+
+---
+
+## Реализация коллекции
+
+Класс `PatientCollection` реализует следующие возможности:
+
+- Добавление пациента (с проверкой типа и дубликатов)
+- Удаление пациента
+- Удаление по индексу
+- Получение всех элементов
+- Поиск:
+  - по имени
+  - по ID
+  - по диагнозу
+- Сортировка:
+  - по имени
+  - по возрасту
+  - по дате поступления
+- Фильтрация:
+  - активные пациенты
+  - пациенты на лечении
+  - критическое состояние
+- Магические методы:
+  - `__len__`
+  - `__iter__`
+  - `__getitem__`
+
+---
+
+## Демонстрация работы
+
+### Сценарий 1: Создание и добавление
+
+![alt text](images/lab12/image-01-(12)(1).png)
+
+*Создание четырех пациентов и добавление их в коллекцию. Вывод списка пациентов.*
+
+---
+
+### Сценарий 2: Поиск и доступ
+
+![alt text](images/lab12/image-01-(12)(2).png)
+
+*Поиск пациента по имени, по ID и по диагнозу. Демонстрация длины коллекции и доступа по индексу.*
+
+---
+
+### Сценарий 3: Фильтрация
+
+![alt text](images/lab12/image-01-(12)(3).png)
+
+*Фильтрация пациентов по статусу: на лечении, активные и в критическом состоянии.*
+
+---
+
+### Сценарий 4: Сортировка
+
+![alt text](images/lab12/image-01-(12)(4).png)
+
+*Сортировка пациентов по возрасту и по имени.*
+
+---
+
+### Сценарий 5: Удаление
+
+![alt text](images/lab12/image-01-(12)(5).png)
+
+*Удаление пациента через remove() и remove_at().*
+
+---
+
+### Сценарий 6: Обработка ошибок
+
+![alt text](images/lab12/image-01-(12)(6).png)
+
+*Попытка добавить дубликат, неверный тип и обращение к несуществующему индексу.*
+
+---
+
+## Выводы
+
+В ходе выполнения работы была реализована система управления пациентами на основе коллекции объектов.
+
+Были освоены:
+- работа с пользовательскими коллекциями
+- реализация поиска, сортировки и фильтрации
+- использование магических методов
+- контроль корректности данных
+
+Полученная система демонстрирует удобную работу с группой объектов и расширяет возможности предыдущей лабораторной работы.

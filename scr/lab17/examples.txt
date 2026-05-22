@@ -1,0 +1,38 @@
+Your choice: 1
+Patient name: Ahmed Ali
+Age: 45
+Diagnosis: инфаркт
+Doctor specialization: кардиолог
+Room number: 101
+Daily cost: 5000
+Temperature (default 36.6): 38.5
+
+
+Your choice: 2
+Patient name: Maria Ivanova
+Age: 30
+Diagnosis: ОРВИ
+Doctor specialization: терапевт
+Appointment date (YYYY-MM-DD): 2026-05-25
+Consultation fee: 1500
+Temperature (default 36.6): 37.2
+
+
+Your choice: 3
+Patient name: Petr Sidorov
+Age: 70
+Diagnosis: гипертония
+Doctor specialization: кардиолог
+Urgency level (1-5, 1=most urgent): 2
+Ambulance arrival? (y/n): y
+Temperature (default 36.6): 36.8
+
+
+Your choice: 1
+Patient name: Elena Petrova
+Age: 25
+Diagnosis: ангина
+Doctor specialization: терапевт
+Room number: 205
+Daily cost: 3500
+Temperature (default 36.6): 39.0

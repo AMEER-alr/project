@@ -1,0 +1,60 @@
+[
+  {
+    "patient_id": "PAT1001",
+    "type": "OutPatient",
+    "name": "Maria Ivanova",
+    "age": 30,
+    "diagnosis": "ОРВИ",
+    "doctor_specialization": "терапевт",
+    "temperature": 37.2,
+    "systolic": 120,
+    "diastolic": 80,
+    "status": "активен",
+    "admission_date": "2026-05-22T01:36:52.105525",
+    "treatment_history": [
+      "[2026-05-22 01:36] Поступление. Диагноз: ОРВИ",
+      "[2026-05-22 01:36] Заметка: Назначен амбулаторный приём на дату: 2026-05-25"
+    ],
+    "appointment_date": "2026-05-25",
+    "consultation_fee": 1500.0
+  },
+  {
+    "patient_id": "PAT1002",
+    "type": "EmergencyPatient",
+    "name": "Petr Sidorov",
+    "age": 70,
+    "diagnosis": "гипертония",
+    "doctor_specialization": "кардиолог",
+    "temperature": 36.8,
+    "systolic": 120,
+    "diastolic": 80,
+    "status": "активен",
+    "admission_date": "2026-05-22T01:37:18.113675",
+    "treatment_history": [
+      "[2026-05-22 01:37] Поступление. Диагноз: гипертония",
+      "[2026-05-22 01:37] Заметка: Экстренное поступление. Срочность: 2"
+    ],
+    "urgency_level": 2,
+    "ambulance_arrival": true
+  },
+  {
+    "patient_id": "PAT1003",
+    "type": "InPatient",
+    "name": "Elena Petrova",
+    "age": 25,
+    "diagnosis": "ангина",
+    "doctor_specialization": "терапевт",
+    "temperature": 39.0,
+    "systolic": 120,
+    "diastolic": 80,
+    "status": "критическое состояние",
+    "admission_date": "2026-05-22T01:40:39.619614",
+    "treatment_history": [
+      "[2026-05-22 01:40] Поступление. Диагноз: ангина",
+      "[2026-05-22 01:40] Заметка: Пациент размещён в палате 205",
+      "[2026-05-22 01:40] Статус изменен: активен → критическое состояние"
+    ],
+    "room_number": 205,
+    "daily_cost": 3500.0
+  }
+]
